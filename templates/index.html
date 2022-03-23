@@ -1,0 +1,90 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <link rel="stylesheet" href="{% static "styles.css" %}"/>
+</head>
+<body>
+
+<form class="address_form" action="" method="post">
+    <label>
+        <input type="text" id="address_input" placeholder="Введите адрес" required>
+    </label>
+    <input type="submit">
+</form>
+
+<form class="radius_form" action="" method="post">
+    <label>
+        <input type="number" step="any" id="radius_lat_input" placeholder="Введите широту" required>
+    </label>
+    <label>
+        <input type="number" step="any" id="radius_lon_input" placeholder="Введите долготу" required>
+    </label>
+    <label>
+        <input type="number" step="any" id="radius_input" placeholder="Введите радиус" required>
+    </label>
+    <input type="submit">
+</form>
+
+<div id="map"></div>
+
+<script>
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+    }).addTo(L.map('map').setView({lon: 0, lat: 0}, 2));
+
+    L.control.scale({imperial: true, metric: true}).addTo(map);
+
+    $('.address_form').on('submit', function (e) {
+        let address_str = $("#address_input").val();
+
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'Address' %}",
+            data: {
+                "address": address_str,
+                "csrfmiddlewaretoken": "{{ csrf_token }}"
+            },
+            success: function (coord) {
+                if (coord["status"] === "OK") {
+                    L.marker({lon: coord["geo_lon"], lat: coord["geo_lat"]}).addTo(map);
+                } else {
+                    alert("Адреса " + address_str + " не существует");
+                }
+            }
+        });
+    })
+
+    $('.radius_form').on('submit', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'RadiusFilter' %}",
+            data: {
+                "lat": $("#radius_lat_input").val(),
+                "lon": $("#radius_lon_input").val(),
+                "radius": $("#radius_input").val(),
+                "csrfmiddlewaretoken": "{{ csrf_token }}"
+            },
+            success: function (cities) {
+                if (cities.length === 0) {
+                    alert("Населённых пунктов по данным параметрам не найдено");
+                } else {
+                    jQuery.each(cities, function (i, city) {
+                        L.marker({lon: city["geo_lon"], lat: city["geo_lat"]}).bindPopup(city["__str__"]).addTo(map);
+                    });
+                }
+            }
+        });
+    })
+</script>
+</body>
+</html>
