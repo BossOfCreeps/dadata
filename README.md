@@ -7,4 +7,4 @@
 
 ## Команда для тестов  
 `python3 manage.py test`  
-Однако для тестов веб-страницы (selenium) необходимо запустить приложение командой `python3 manage.py runserver` и загрузить в БД данные `test_data/test_city.csv` (от том как занести см. пункт выше). Так происходит из-за того, что selenium, в отличии от TestCase, нужен работающий сервер с подготовленными данными. Кроме это необходим [веб-драйвер](https://chromedriver.chromium.org/downloads).
+Однако для тестов веб-страницы (selenium) необходимо запустить приложение командой `python3 manage.py runserver --insecure` и загрузить в БД данные `test_data/test_city.csv` (от том как занести см. пункт выше). Так происходит из-за того, что selenium, в отличии от TestCase, нужен работающий сервер с подготовленными данными. Кроме это необходим [веб-драйвер](https://chromedriver.chromium.org/downloads).
