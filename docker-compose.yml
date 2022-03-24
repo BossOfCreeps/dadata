@@ -20,7 +20,7 @@ services:
                python manage.py makemigrations main &&
                python manage.py migrate &&
                python manage.py parse_to_db city.csv &&
-               python manage.py runserver 0.0.0.0:8000"
+               python manage.py runserver 0.0.0.0:8000 --insecure"
     volumes:
       - .:/code
     ports:
