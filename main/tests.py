@@ -32,7 +32,7 @@ class CommandsTestCase(TestCase):
         City.objects.all().delete()
 
     def test_command_parse_to_db(self):
-        test_csv_path = "city.csv"  # test_data/test_
+        test_csv_path = "test_data/test_city.csv"
         call_command("parse_to_db", test_csv_path, verbosity=0)
 
         right = [row for row in csv.DictReader(open(test_csv_path, encoding='utf-8'))]
