@@ -57,7 +57,7 @@
             },
             success: function (coord) {
                 if (coord["status"] === "OK") {
-                    L.marker({lon: coord["geo_lon"], lat: coord["geo_lat"]}).addTo(map);
+                    L.marker({lon: coord["geo_lon"], lat: coord["geo_lat"]}).bindPopup(address_str).addTo(map);
                 } else {
                     alert("Адреса " + address_str + " не существует");
                 }

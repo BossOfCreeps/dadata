@@ -31,5 +31,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_HOST=db
       - PARSE_CSV=0
+      - DADATA_TOKEN=b5fe76163be88be3b6c01805e3db968f39f55775
+      - DADATA_SECRET=ff548b6d9fdc47a84cfb276b078b8388bf6450e3
     depends_on:
       - db
