@@ -16,7 +16,7 @@
     <label>
         <input type="text" id="address_input" placeholder="Введите адрес" required>
     </label>
-    <input type="submit">
+    <input type="submit" id="address_submit">
 </form>
 
 <form class="radius_form" action="" method="post">
@@ -29,16 +29,18 @@
     <label>
         <input type="number" step="any" id="radius_input" placeholder="Введите радиус" required>
     </label>
-    <input type="submit">
+    <input type="submit" id="radius_submit">
 </form>
 
 <div id="map"></div>
 
 <script>
+    let map = L.map('map').setView({lon: 0, lat: 0}, 2);
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-    }).addTo(L.map('map').setView({lon: 0, lat: 0}, 2));
+    }).addTo(map);
 
     L.control.scale({imperial: true, metric: true}).addTo(map);
 
@@ -59,6 +61,9 @@
                 } else {
                     alert("Адреса " + address_str + " не существует");
                 }
+            },
+            error: function (){
+                alert("Произошла ошибка с адресом " + address_str);
             }
         });
     })

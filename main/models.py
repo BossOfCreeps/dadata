@@ -12,11 +12,11 @@ class Country(models.Model):
 
 
 class FederalDistrict(models.Model):
-    federal_district = models.CharField("Название", max_length=1024)
+    name = models.CharField("Название", max_length=1024)
     country = models.ForeignKey(Country, models.CASCADE, "federal_districts", verbose_name="Страна")
 
     def __str__(self):
-        return f"{self.federal_district} ({self.country.name})"
+        return f"{self.name} ({self.country.name})"
 
     class Meta:
         verbose_name = verbose_name_plural = "Федеральный округ"
@@ -33,12 +33,12 @@ class RegionType(models.Model):
 
 
 class Region(models.Model):
-    region = models.CharField("Название", max_length=1024)
+    name = models.CharField("Название", max_length=1024)
     region_type = models.ForeignKey(RegionType, models.CASCADE, "regions", verbose_name="Страна")
     federal_district = models.ForeignKey(FederalDistrict, models.CASCADE, "regions", verbose_name="Страна")
 
     def __str__(self):
-        return f"{self.region} ({self.federal_district})"
+        return f"{self.name} ({self.federal_district})"
 
     class Meta:
         verbose_name = verbose_name_plural = "Регион"
@@ -55,11 +55,11 @@ class AreaType(models.Model):
 
 
 class Area(models.Model):
-    area = models.CharField("Название", max_length=1024)
+    name = models.CharField("Название", max_length=1024)
     area_type = models.ForeignKey(AreaType, models.CASCADE, "areas", verbose_name="Тип района")
 
     def __str__(self):
-        return f"{self.area}"
+        return f"{self.name} ({self.area_type})"
 
     class Meta:
         verbose_name = verbose_name_plural = "Район"
@@ -112,7 +112,7 @@ class City(models.Model):
     postal_code = models.CharField("Почтовый код", max_length=36, null=True, blank=True)
     region = models.ForeignKey(Region, models.CASCADE, "cities", verbose_name="Регион")
     area = models.ForeignKey(Area, models.CASCADE, "cities", verbose_name="Район", null=True, blank=True)
-    kladr_id = models.IntegerField("КЛАДР")
+    kladr_id = models.BigIntegerField("КЛАДР")
     fias_id = models.CharField("ФИАС", max_length=36)
     fias_level = models.ForeignKey(FiasLevel, models.CASCADE, "cities", verbose_name="Уровень ФИАС")
     capital_marker = models.ForeignKey(CapitalMarker, models.CASCADE, "cities", verbose_name="Маркер столицы")
@@ -153,7 +153,7 @@ class City(models.Model):
         elif self.city and self.settlement:
             base_name = f"{self.settlement} ({self.city})"
         elif not self.city and not self.settlement:
-            base_name = f"{self.region.region}"
+            base_name = f"{self.region.name}"
 
         return f"{base_name}"
 

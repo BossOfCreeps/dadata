@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dadata import Dadata
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,8 +77,12 @@ WSGI_APPLICATION = 'dadata_test.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_NAME', 'dadata'),
+        'USER': os.environ.get('POSTGRES_USER', 'pi'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
+        'HOST': os.environ.get('POSTGRES_HOST', '192.168.0.11'),
+        'PORT': 5432,
     }
 }
 
@@ -125,3 +130,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DADATA_TOKEN = "b5fe76163be88be3b6c01805e3db968f39f55775"
 DADATA_SECRET = "ff548b6d9fdc47a84cfb276b078b8388bf6450e3"
+DADATA = Dadata(DADATA_TOKEN, DADATA_SECRET)

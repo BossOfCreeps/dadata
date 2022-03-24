@@ -5,7 +5,7 @@ from main.models import City, CapitalMarker, FiasLevel, Region, RegionType, Fede
 
 
 class FederalDistrictSerializer(serializers.Serializer):
-    federal_district = serializers.CharField()
+    federal_district = serializers.CharField(source="name")
     country = serializers.CharField()
 
     def create(self, validated_data):
@@ -17,7 +17,7 @@ class FederalDistrictSerializer(serializers.Serializer):
 
 
 class AreaSerializer(serializers.Serializer):
-    area = serializers.CharField()
+    area = serializers.CharField(source="name")
     area_type = serializers.CharField()
 
     def create(self, validated_data):
@@ -29,7 +29,7 @@ class AreaSerializer(serializers.Serializer):
 
 
 class RegionSerializer(serializers.Serializer):
-    region = serializers.CharField()
+    region = serializers.CharField(source="name")
     region_type = serializers.CharField()
     country = serializers.CharField()
     federal_district = serializers.CharField()
@@ -117,3 +117,27 @@ class CityModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = ['__str__', 'geo_lon', 'geo_lat']
+
+
+class CityCsvModelSerializer(serializers.ModelSerializer):
+    country = serializers.CharField(source='region.federal_district.country.name')
+    federal_district = serializers.CharField(source='region.federal_district.name')
+    region_type = serializers.CharField(source='region.region_type.name')
+    region = serializers.CharField(source='region.name')
+    area = serializers.CharField(source='area.name', allow_blank=True, allow_null=True)
+    area_type = serializers.CharField(source='area.area_type.name', allow_blank=True, allow_null=True)
+    city_type = serializers.CharField(source='city_type.name', allow_blank=True, allow_null=True)
+    fias_level = serializers.CharField(source='fias_level.name')
+    capital_marker = serializers.CharField(source='capital_marker.name')
+    tax_office = serializers.CharField(source='tax_office.name')
+    geo_lat = serializers.CharField()
+    geo_lon = serializers.CharField()
+    kladr_id = serializers.CharField()
+    settlement_type = serializers.CharField(source='settlement_type.name', allow_blank=True, allow_null=True)
+
+    class Meta:
+        model = City
+        fields = ['address', 'postal_code', 'country', 'federal_district', 'region_type', 'region', 'area_type', 'area',
+                  'city_type', 'city', 'settlement_type', 'settlement', 'kladr_id', 'fias_id', 'fias_level', 'okato',
+                  'capital_marker', 'oktmo', 'tax_office', 'timezone', 'geo_lat', 'geo_lon', 'population',
+                  'foundation_year']

@@ -1,4 +1,5 @@
 import csv
+import os
 
 from django.core.management.base import BaseCommand
 
@@ -13,6 +14,9 @@ class Command(BaseCommand):
         parser.add_argument('file', nargs='+', type=str)
 
     def handle(self, *args, **options):
+        if os.environ.get('PARSE_CSV', "True") in ["0", "False", "No"]:
+            return
+
         City.objects.all().delete()
 
         for i, row in enumerate(csv.DictReader(open(options["file"][0], encoding='utf-8'))):
@@ -20,4 +24,3 @@ class Command(BaseCommand):
             if serializer.is_valid():
                 serializer.save()
             print(f"{i} {'SUCCESS' if serializer.is_valid() else f'ERROR {serializer.errors}'}")
-
